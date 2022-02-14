@@ -2,6 +2,7 @@ import Sequelize from "sequelize";
 
 import sequelize from "../utilities/database.js";
 
+
 const User = sequelize.define("user", {
   id: {
     type: Sequelize.INTEGER,
@@ -21,16 +22,13 @@ const User = sequelize.define("user", {
     type: Sequelize.STRING,
     allowNull: true,
   },
-
-  isAdmin: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
-  isVerified: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
-  isAuthorized: {
+  
+  loanprovidercode: {
+    type: Sequelize.STRING,
+    allowNull: false,
+},
+ 
+  isUserActive:{
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },

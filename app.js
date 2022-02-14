@@ -2,13 +2,23 @@ import path from "path";
 import fs from "fs";
 import cluster from "cluster";
 import os from "os";
-
 import express from "express";
-import multer from "multer";
+// import multer from "multer";
 import sequelize from "./utilities/database.js";
 import helmet from "helmet";
 import compression from "compression";
 import dotenv from "dotenv";
+import cors from "cors";
+
+//all error controllers imported here
+import { corsError } from "./middleware/error-handlers/cors-error.js";
+
+import { centralError } from "./middleware/error-handlers/central-errror.js";
+
+//all routes imported here
+import authenticationRoutes from "./routes/authentication-routes.js";
+import administratorRoutes from "./routes/administrator-routes.js";
+// import userRoutes from "./routes/user-routes.js";
 
 const cpu = os.cpus().length;
 
@@ -20,13 +30,25 @@ const port = process.env.PORT || 3300;
 
 const app = express();
 
-//all error controllers imported here
-import { corsError } from "./middleware/error-handlers/cors-error.js";
-import { centralError } from "./middleware/error-handlers/central-errror.js";
+//handle cors error
+app.use(corsError);
 
-//all routes imported here
-import authenticationRoutes from "./routes/authentication-routes.js";
-import administratorRoutes from "./routes/administrator-routes.js";
+app.use(cors());
+app.options("*", cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, X-Callback-Type, Content-Type, Accept"
+  );
+  res.header("Cache-Control", "no-cache");
+  if ("OPTIONS" == req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+});
 
 if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
@@ -39,57 +61,49 @@ if (cluster.isMaster) {
   });
 } else {
   //multer file storage
-  const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      let dir = "./documents";
-      //this will create the folder if not exists
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-      }
-      cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-      cb(
-        null,
-        new Date().toISOString().replace(/:/g, "-") +
-          "-" +
-          file.originalname.toString().replace(/\s/g, "-")
-      );
-    },
-  });
-
-  //multer file filter
-  const fileFilter = (req, file, cb) => {
-    if (
-      file.mimetype === "image/jpg" ||
-      file.mimetype === "image/png" ||
-      file.mimetype === "image/jpeg"
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
-  };
+  // const fileStorage = multer.diskStorage({
+  //   destination: (req, file, cb) => {
+  //     let dir = "./uploaded-pdf";
+  //     //this will create the folder if not exists
+  //     if (!fs.existsSync(dir)) {
+  //       fs.mkdirSync(dir);
+  //     }
+  //     cb(null, dir);
+  //   },
+  //   filename: (req, file, cb) => {
+  //     cb(
+  //       null,
+  //       new Date().toISOString().replace(/:/g, "-") +
+  //         "-" +
+  //         file.originalname.toString().replace(/\s/g, "-")
+  //     );
+  //   },
+  // });
   //defining absolute path of current WORKDIR
   const __dirname = path.resolve();
 
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
   app.use(express.static(__dirname));
-  app.use(express.static(path.join(__dirname, "public")));
+  // app.use(express.static(path.join(__dirname, "uploaded-pdf")));
 
   // multer configuration
-  app.use(
-    multer({
-      storage: fileStorage,
-      fileFilter: fileFilter,
-    }).single("image")
-  );
+  // app.use(
+  //   multer({
+  //     storage: fileStorage,
+  //     fileFilter: fileFilter,
+  //   }).single("pdf")
+  // );
 
-  app.use("/documents", express.static(path.join(__dirname, "documents")));
+  // app.use(
+  //   "/uploaded-pdf",
+  //   express.static(path.join(__dirname, "uploaded-pdf"))
+  // );
 
-  //handle cors error
-  app.use(corsError);
+  // app.use(
+  //   "/uploaded-image",
+  //   express.static(path.join(__dirname, "testportal-img"))
+  // );
 
   //all routes entrypoint here
   app.use("/auth", authenticationRoutes);

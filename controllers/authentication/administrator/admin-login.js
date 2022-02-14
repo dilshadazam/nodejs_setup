@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 //models
-import User from "../../../models/user.js";
+import Admin from "../../../models/admin.js";
 
 //helpers
 import { validationErrorHandler } from "../../../helpers/validation-error-handler.js";
@@ -12,9 +12,10 @@ export const administratorLogin = async (req, res, next) => {
   validationErrorHandler(req, next);
   const { email, password } = req.body;
   try {
-    const admin = await User.findOne({
+    const admin = await Admin.findOne({
       where: {
         email: req.body.email,
+        isAdminActive:true,
       },
       raw: true,
     });
@@ -39,12 +40,12 @@ export const administratorLogin = async (req, res, next) => {
       { id, email: mail, name },
       process.env.REFRESH_TOKEN_SIGNING_KEY
     );
-    await User.update(
+    await Admin.update(
       { refreshToken: refreshToken },
-      { where: { email, isAdmin: true } }
+      { where: { email, isAdminActive: true } }
     );
     res.status(201).json({
-      msg: `Login with email Successful`,
+      msg: `Hey Admin ${name} login successful`,
       token: token,
       refreshToken: refreshToken,
     });

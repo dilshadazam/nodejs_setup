@@ -1,9 +1,9 @@
 import Sequelize from "sequelize";
 
 const sequelize = new Sequelize(
-  "svrgroup",
+  "interestcalculator",
   "root",
-  "root",
+  "SEQ@passw0rd1234",
   {
     dialect: "mysql",
     host: "localhost",
