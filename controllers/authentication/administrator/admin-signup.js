@@ -2,30 +2,34 @@
 import bcrypt from "bcryptjs";
 
 //models
-import User from "../../../models/user.js";
+import Admin from "../../../models/admin.js";
 
 //helpers
 import { validationErrorHandler } from "../../../helpers/validation-error-handler.js";
 
 export const adminSignup = async (req, res, next) => {
   validationErrorHandler(req, next);
-  const { name, email, password } = req.body;
+  const { name,email, password } = req.body;
+ 
   try {
-    const admin = await User.findOne({ where: { email } });
+    const admin = await Admin.findOne({ where: { email } });
     if (admin) {
-      const error = new Error("User already exists");
+      const error = new Error("This email already exists in database");
       error.statusCode = 403;
       return next(error);
     }
     const encryptedPassword = await bcrypt.hash(password, 12);
-    const result = await User.create({
+    console.log(encryptedPassword);
+    const result = await Admin.create({
       name,
       email,
       password: encryptedPassword,
-      isAdmin: true,
+      isAdminActive: true,
+      isAuthorized:true,
     });
+   
     res.status(201).json({
-      msg: `Admin registered successfully`
+      msg: `Admin Registered successfully`
     });
   } catch (err) {
     if (!err.statusCode) {

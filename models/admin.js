@@ -2,7 +2,9 @@ import Sequelize from "sequelize";
 
 import sequelize from "../utilities/database.js";
 
-const Flat = sequelize.define("flat", {
+import Rolemaster from "../models/rolemaster.js";
+
+const Admin = sequelize.define("admin", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -13,34 +15,27 @@ const Flat = sequelize.define("flat", {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  title: {
+  email: {
     type: Sequelize.STRING,
     allowNull: true,
   },
-  street: {
+  password: {
     type: Sequelize.STRING,
     allowNull: true,
   },
-  apartmentsqfeet: {
-    type: Sequelize.STRING,
-    allowNull: true,
+  isAdminActive: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
   },
-  bedrooms: {
-    type: Sequelize.STRING,
-    allowNull: true,
+ 
+  isAuthorized: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
   },
-  bath: {
-    type: Sequelize.STRING,
-    allowNull: true,
-  },
-  parking: {
-    type: Sequelize.STRING,
-    allowNull: true,
-  },
-  price: {
+  refreshToken: {
     type: Sequelize.STRING,
     allowNull: true,
   },
 });
 
-export default Flat;
+export default Admin;

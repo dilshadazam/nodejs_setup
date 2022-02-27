@@ -1,6 +1,7 @@
 import Sequelize from "sequelize";
 
 import sequelize from "../utilities/database.js";
+import loanprovider from "../models/loanprovider.js";
 
 const User = sequelize.define("user", {
   id: {
@@ -9,6 +10,14 @@ const User = sequelize.define("user", {
     allowNull: false,
     primaryKey: true,
   },
+  loanproviderId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    references: {
+      model:loanprovider,
+      key: "id",
+    },
+},
   name: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -21,16 +30,13 @@ const User = sequelize.define("user", {
     type: Sequelize.STRING,
     allowNull: true,
   },
-
-  isAdmin: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
-  isVerified: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: false,
-  },
-  isAuthorized: {
+  
+  loanprovidercode: {
+    type: Sequelize.STRING,
+    allowNull: false,
+},
+ 
+  isUserActive:{
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
