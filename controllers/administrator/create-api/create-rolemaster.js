@@ -1,64 +1,28 @@
-<<<<<<< HEAD
 //models
 import Rolemaster from "../../../models/rolemaster.js";
 
-import {validationErrorHandler} from "../../../helpers/validation-error-handler.js";
- 
+import { validationErrorHandler } from "../../../helpers/validation-error-handler.js";
 // EXPORT FUNCTION NAME FOR ROUTE
 export const createRoleMaster = async (req, res, next) => {
   validationErrorHandler(req, next);
-  const {rolemastertitle} = req.body;
-  try {
-    const preExistingRolemaster = await Rolemaster.findOne({
-      where: { 
-        rolemastertitle
-      }
-    }); 
-    if (preExistingRolemaster) {
-      const error = new Error('Role Master already Exists!');
-      error.statusCode = 403;
-      return next(error);
-    }
-    const response = await Rolemaster.create({
-      rolemastertitle
-    });
-     //response in postman when data successfully inserted
-    res.status(201).json({
-      message: "Role Master create successfully !!",
-      response
-    });
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-=======
-//models
-import Rolemaster from "../../../models/rolemaster.js";
-
-import {validationErrorHandler} from "../../../helpers/validation-error-handler.js";
-// EXPORT FUNCTION NAME FOR ROUTE
-export const createRoleMaster = async (req, res, next) => {
-  validationErrorHandler(req, next);
-  const {rolemastertitle} = req.body;
+  const { rolemastertitle } = req.body;
   try {
     const preExistingRolemaster = await Rolemaster.findOne({
       where: {
-        rolemastertitle
-      }
+        rolemastertitle,
+      },
     });
     if (preExistingRolemaster) {
-      const error = new Error('Role Master already Exists!');
+      const error = new Error("Role Master already Exists!");
       error.statusCode = 403;
       return next(error);
     }
     const response = await Rolemaster.create({
-      rolemastertitle
+      rolemastertitle,
     });
     res.status(201).json({
       message: "Role Master create successfully !!",
-      response
+      response,
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -66,5 +30,4 @@ export const createRoleMaster = async (req, res, next) => {
     }
     next(err);
   }
->>>>>>> f2e0950c2d27e84702c597a21939b1de08400f7f
 };
