@@ -16,10 +16,7 @@ import { corsError } from "./middleware/error-handlers/cors-error.js";
 import { centralError } from "./middleware/error-handlers/central-errror.js";
 
 //all routes imported here
-import authenticationRoutes from "./routes/authentication-routes.js";
-import administratorRoutes from "./routes/administrator-routes.js";
-import userRoutes from "./routes/user-routes.js";
-import loanProvider from "./routes/loanprovider-routes.js";
+
 const cpu = os.cpus().length;
 
 if (process.env.NODE_ENV !== "production") {
@@ -106,10 +103,8 @@ if (cluster.isMaster) {
   // );
 
   //All routes entrypoint here
-  app.use("/auth", authenticationRoutes);
-  app.use("/administrator", administratorRoutes);
-  app.use("/loanprovider", loanProvider);
-  app.use("/user", userRoutes);
+  // app.use("/auth", authenticationRoutes);
+  // app.use("/administrator", administratorRoutes);
 
   app.use(helmet());
   app.use(compression());
